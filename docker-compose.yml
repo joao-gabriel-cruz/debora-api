@@ -1,0 +1,15 @@
+
+services:
+  db:
+    container_name: debora-db
+    image: postgres:15
+    environment:
+       POSTGRES_PASSWORD: 12345
+       POSTGRES_USER: postgres
+       POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgres/data
+volumes:
+  pgdata: {}
