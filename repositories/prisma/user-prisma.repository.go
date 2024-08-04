@@ -3,6 +3,7 @@ package prisma_repository
 import (
 	"context"
 
+	"github.com/joao-gabriel-cruz/debora-api/lib"
 	"github.com/joao-gabriel-cruz/debora-api/model"
 	"github.com/joao-gabriel-cruz/debora-api/prisma/db"
 	repository "github.com/joao-gabriel-cruz/debora-api/repositories"
@@ -18,11 +19,7 @@ func (u *UserPrismaRepository) FindByID(ctx context.Context, id string) (*db.Use
 		db.User.ID.Equals(id),
 	).Exec(ctx)
 
-	if err != nil {
-		return nil, err
-	}
-
-	return user, nil
+	return lib.ErrorData(user, err)
 }
 
 // Create implements repository.UserRepository.
@@ -33,12 +30,7 @@ func (u *UserPrismaRepository) Create(ctx context.Context, user model.User) erro
 		db.User.Password.Set(user.Password),
 	).Exec(ctx)
 
-	if err != nil {
-		println("Error creating user")
-		return err
-
-	}
-	return nil
+	return lib.Error(err)
 }
 
 // Delete implements repository.UserRepository.
@@ -47,10 +39,7 @@ func (u *UserPrismaRepository) Delete(ctx context.Context, id string) error {
 		db.User.ID.Equals(id),
 	).Delete().Exec(ctx)
 
-	if err != nil {
-		return err
-	}
-	return nil
+	return lib.Error(err)
 }
 
 // FindAll implements repository.UserRepository.
@@ -58,11 +47,8 @@ func (u *UserPrismaRepository) FindAll(ctx context.Context) ([]db.UserModel, err
 
 	users, err := u.db.User.FindMany().Exec(ctx)
 
-	if err != nil {
-		return nil, err
-	}
+	return lib.ErrorData(users, err)
 
-	return users, nil
 }
 
 // Update implements repository.UserRepository.
@@ -75,11 +61,8 @@ func (u *UserPrismaRepository) Update(ctx context.Context, id string, user model
 		db.User.Password.Set(user.Password),
 	).Exec(ctx)
 
-	if err != nil {
-		return err
-	}
+	return lib.Error(err)
 
-	return nil
 }
 
 func NewUserPrismaRepository(db *db.PrismaClient) repository.UserRepository {
